@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:payment_process/widgets/navbar.dart';
+import 'package:payment_process/models/user.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({super.key, required this.user});
+
+  final User user;
 
   @override
   Widget build(BuildContext context){
@@ -48,7 +51,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children:[
                     Text(
                       "Total Saldo",
                       style: TextStyle(
@@ -58,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 12),
                     Text(
-                      "MONEY",
+                      "Rp. ${user.totalSaldo}",
                       style: TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,

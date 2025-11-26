@@ -46,11 +46,88 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-              )
-            ],
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Total Saldo",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      "MONEY",
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {}, //isi nanti, fokus front endnya dulu
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(12)
+                      ),
+                    ),
+                  child: const Text(
+                    "Transfer",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.5,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(0.5, 0.5),
+                          blurRadius: 1,
+                          color: Colors.black
+                        )
+                      ]
+                    )
+                  )
+                )
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {}, //isi nanti, fokus front endnya dulu
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(12)
+                      ),
+                    ),
+                  child: const Text(
+                    "Transfer",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w500,
+                      letterSpacing: 0.5,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(0.5, 0.5),
+                          blurRadius: 1,
+                          color: Colors.black
+                        )
+                      ]
+                    )
+                  )
+                )
+              ),
+            ])
           )
         )
-      )
-    );
+      );
+    }
   }
-}

@@ -9,7 +9,7 @@ black = 255, 0, 0, 0
 white = 255, 255, 255, 255
 
 selected item (gw pake buat navbar) = 120, 255, 255, 255
-unselected item (gw pake buat navbar) = 60, 255, 255, 255
+unselected item (gw pake buat navbar) = 90, 255, 255, 255
 
 blue (transparent) = 120, 0, 94, 255
 

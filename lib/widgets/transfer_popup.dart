@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/checkout_screen.dart';
 
 class TransferPopup extends StatelessWidget {
   const TransferPopup({super.key});
@@ -74,7 +75,10 @@ class TransferPopup extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CheckoutPage()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 0,

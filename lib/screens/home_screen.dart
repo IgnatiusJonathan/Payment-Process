@@ -4,10 +4,16 @@ import '../models/user.dart';
 import '../widgets/topup_popup.dart';
 import '../widgets/transfer_popup.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  final User user;
+
   const HomeScreen({super.key, required this.user});
 
-  final User user;
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context){
@@ -58,7 +64,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 12),
                     Text(
-                      "Rp. ${user.totalSaldo}",
+                      "Rp. ${widget.user.totalSaldo}",
                       style: TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
@@ -108,7 +114,23 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {}, //isi nanti, fokus front endnya dulu
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(20)),
+                      ),
+                      builder: (context) => TopUpPopup(
+                        onTopUp: (amount) {
+                          setState(() {
+                            widget.user.totalSaldo += amount;
+                          });
+                        },
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     shape: RoundedRectangleBorder(

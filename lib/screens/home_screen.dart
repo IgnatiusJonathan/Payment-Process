@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:payment_process/widgets/navbar.dart';
-import 'package:payment_process/models/user.dart';
+import '../widgets/navbar.dart';
+import '../models/user.dart';
+import '../widgets/topup_popup.dart';
+import '../widgets/transfer_popup.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.user});
@@ -10,7 +12,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context){
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       body:SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
@@ -19,7 +20,7 @@ class HomeScreen extends StatelessWidget {
             children: [
               const SizedBox(height: 20),
               const Text(
-                "Welcome to Payment Processor!",
+                "Welcome to Scannabit!",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 32,
@@ -31,7 +32,6 @@ class HomeScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
-                  color: Colors.black54,
                 ),
               ),
               const SizedBox(height: 30),
@@ -39,11 +39,9 @@ class HomeScreen extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black12,
                       blurRadius: 10,
                       offset: Offset(0, 4),
                     ),
@@ -56,7 +54,6 @@ class HomeScreen extends StatelessWidget {
                       "Total Saldo",
                       style: TextStyle(
                         fontSize: 20,
-                        color: Colors.black54,
                       ),
                     ),
                     SizedBox(height: 12),
@@ -74,9 +71,18 @@ class HomeScreen extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {}, //isi nanti, fokus front endnya dulu
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(20)),
+                      ),
+                      builder: (context) => const TransferPopup(),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadiusGeometry.circular(12)
@@ -92,7 +98,6 @@ class HomeScreen extends StatelessWidget {
                         Shadow(
                           offset: Offset(0.5, 0.5),
                           blurRadius: 1,
-                          color: Colors.black
                         )
                       ]
                     )
@@ -105,14 +110,13 @@ class HomeScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {}, //isi nanti, fokus front endnya dulu
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadiusGeometry.circular(12)
                       ),
                     ),
                   child: const Text(
-                    "Transfer",
+                    "Top Up",
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
@@ -121,7 +125,6 @@ class HomeScreen extends StatelessWidget {
                         Shadow(
                           offset: Offset(0.5, 0.5),
                           blurRadius: 1,
-                          color: Colors.black
                         )
                       ]
                     )

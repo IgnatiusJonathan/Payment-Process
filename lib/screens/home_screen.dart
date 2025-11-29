@@ -99,9 +99,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       borderRadius: BorderRadius.circular(12)
                       ),
                     ),
-                  child: const Text(
+                  child: Text(
                     "Transfer",
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.5,
@@ -152,9 +152,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       borderRadius: BorderRadiusGeometry.circular(12)
                       ),
                     ),
-                  child: const Text(
+                  child: Text(
                     "Top-Up",
-                    style: TextStyle(
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.5,

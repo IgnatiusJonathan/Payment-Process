@@ -26,11 +26,23 @@ class Database {
           totalSaldo integer NOT NULL
         ) """);
       },
+    ))
+    ..add(SqliteMigration(
+      2,
+      (tx) async {
+        await tx.execute(""" CREATE TABLE IF NOT EXISTS HISTORY (
+          HistoryID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+          userID integer NOT NULL,
+          Recepient VARCHAR(255) NOT NULL,
+          timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (userID) REFERENCES USERS(userID)
+        ) """);
+      },
     ));
 
   Future<void> init() async {
     final dir = await getApplicationSupportDirectory();
-    final path = join(dir.path, 'tcg.db');
+    final path = join(dir.path, 'scannabit.db');
 
     _db = SqliteDatabase(path: path);
     _migrations.migrate(_db);

@@ -52,12 +52,15 @@ class _TopUpPopupState extends State<TopUpPopup> {
             child: ElevatedButton(
               onPressed: () {
                 int amount = int.tryParse(_controller.text) ?? 0;
+
                 if (amount <= 0) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Please enter a valid amount")),
                   );
-                  return;
+                return;
                 }
+                widget.onTopUp(amount);
+                Navigator.pop(context);
               },
               child: const Text("Confirm"),
             ),

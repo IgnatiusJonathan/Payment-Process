@@ -23,7 +23,8 @@ class Database {
           userID integer NOT NULL PRIMARY KEY AUTOINCREMENT,
           username VARCHAR(255) NOT NULL,
           password VARCHAR(255) NOT NULL,
-          totalSaldo integer NOT NULL
+          totalSaldo integer NOT NULL,
+          isLoggedIn INTEGER DEFAULT 0
         ) """);
       },
     ))

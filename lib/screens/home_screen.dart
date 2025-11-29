@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../provider/user_provider.dart';
 import '../widgets/navbar.dart';
 import '../models/user.dart';
 import '../widgets/topup_popup.dart';
 import '../widgets/transfer_popup.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   final User user;
 
   const HomeScreen({super.key, required this.user});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context){
@@ -91,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(12)
+                      borderRadius: BorderRadius.circular(12)
                       ),
                     ),
                   child: const Text(
@@ -124,9 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       builder: (context) => TopUpPopup(
                         onTopUp: (amount) {
-                          setState(() {
-                            widget.user.totalSaldo += amount;
-                          });
+                          ref.read(userProvider.notifier).topUp(amount);
                         },
                       ),
                     );
@@ -138,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   child: const Text(
-                    "Top Up",
+                    "Top-Up",
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w500,

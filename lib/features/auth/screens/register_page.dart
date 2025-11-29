@@ -10,108 +10,190 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _nameController = TextEditingController();
+  final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final _confirmPasswordController = TextEditingController();
+  
+  bool _isObscurePass = true;
+  bool _isObscureConfirm = true;
 
   @override
   Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
+    final isLoading = Provider.of<AuthProvider>(context).isLoading;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFF0B1426),
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Log In", style: TextStyle(color: Color(0xFF0096C7), fontWeight: FontWeight.bold)),
+          )
+        ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView( // Agar tidak error saat keyboard muncul
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            const Text("Create Account", style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            const Text("Create account by completing the data below", style: TextStyle(color: Colors.grey, fontSize: 14)),
+            const SizedBox(height: 30),
+
+            // --- INPUT USERNAME ---
+            const Text("Username", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _usernameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: const Color(0xFF1C273A),
+                hintText: "Create username",
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // --- INPUT EMAIL ---
+            const Text("Email", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _emailController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: const Color(0xFF1C273A),
+                hintText: "Enter email",
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // --- INPUT PHONE ---
+            const Text("Phone Number", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _phoneController,
+              keyboardType: TextInputType.phone,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: const Color(0xFF1C273A),
+                hintText: "08123456789",
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // --- INPUT PASSWORD ---
+            const Text("Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _passwordController,
+              obscureText: _isObscurePass,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: const Color(0xFF1C273A),
+                hintText: "Enter password",
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                suffixIcon: IconButton(
+                  icon: Icon(_isObscurePass ? Icons.visibility_off : Icons.visibility, color: Colors.grey),
+                  onPressed: () => setState(() => _isObscurePass = !_isObscurePass),
+                ),
+              ),
+            ),
+            
+            const SizedBox(height: 5),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "Create Account",
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                ),
-                const Text(
-                  "Mulai perjalanan finansialmu sekarang.",
-                  style: TextStyle(color: Colors.grey, fontSize: 16),
-                ),
-                const SizedBox(height: 40),
-
-                // Input Nama
-                TextFormField(
-                  controller: _nameController,
-                  decoration: InputDecoration(
-                    labelText: "Full Name",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    prefixIcon: const Icon(Icons.person_outline),
-                  ),
-                  validator: (value) => value!.isEmpty ? "Nama wajib diisi" : null,
-                ),
-                const SizedBox(height: 16),
-
-                // Input Email
-                TextFormField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: "Email Address",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    prefixIcon: const Icon(Icons.email_outlined),
-                  ),
-                  validator: (value) => !value!.contains('@') ? "Email tidak valid" : null,
-                ),
-                const SizedBox(height: 16),
-
-                // Input Password
-                TextFormField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: "Password",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                    prefixIcon: const Icon(Icons.lock_outline),
-                  ),
-                  validator: (value) => value!.length < 6 ? "Password min. 6 karakter" : null,
-                ),
-                const SizedBox(height: 24),
-
-                // Tombol Register
-                ElevatedButton(
-                  onPressed: authProvider.isLoading
-                      ? null
-                      : () async {
-                          if (_formKey.currentState!.validate()) {
-                            bool success = await authProvider.register(
-                              _nameController.text,
-                              _emailController.text,
-                              _passwordController.text,
-                            );
-                            if (success && context.mounted) {
-                              Navigator.pop(context); // Kembali ke login setelah sukses
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("Akun berhasil dibuat!")),
-                              );
-                            }
-                          }
-                        },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[700], // Pembeda warna untuk Register
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: authProvider.isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Sign Up Now", style: TextStyle(color: Colors.white, fontSize: 16)),
-                ),
+                 Text("✓ 8+ characters", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                 Text("✓ 1 uppercase", style: TextStyle(color: Colors.grey, fontSize: 12)),
+                 Text("✓ 1 lowercase", style: TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             ),
-          ),
+            const SizedBox(height: 15),
+
+            // --- INPUT CONFIRM PASSWORD ---
+            const Text("Confirm Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _confirmPasswordController,
+              obscureText: _isObscureConfirm,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: const Color(0xFF1C273A),
+                hintText: "Repeat password to confirm",
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                suffixIcon: IconButton(
+                  icon: Icon(_isObscureConfirm ? Icons.visibility_off : Icons.visibility, color: Colors.grey),
+                  onPressed: () => setState(() => _isObscureConfirm = !_isObscureConfirm),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 40),
+
+            // TOMBOL REGISTER
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: isLoading ? null : () async {
+                  if (_passwordController.text != _confirmPasswordController.text) {
+                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Password tidak sama!")));
+                     return;
+                  }
+                  
+                  final provider = Provider.of<AuthProvider>(context, listen: false);
+                  bool success = await provider.register(
+                    _usernameController.text,
+                    _emailController.text,
+                    _phoneController.text,
+                    _passwordController.text
+                  );
+
+                  if (success && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Akun berhasil dibuat! Silakan Login.")));
+                    Navigator.pop(context);
+                  } else if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Email sudah terdaftar.")));
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0096C7),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+                child: isLoading 
+                  ? const CircularProgressIndicator(color: Colors.white) 
+                  : const Text("Create Account", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+            ),
+            const SizedBox(height: 30),
+          ],
         ),
       ),
     );

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // Import Riverpod
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
 import 'package:intl/intl.dart';
 
@@ -35,7 +35,6 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-
     final allTransactions = ref.watch(transactionProvider);
 
     final filteredTransactions = allTransactions.where((t) {
@@ -48,42 +47,52 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
       return matchesSearch && matchesChip;
     }).toList();
 
+    filteredTransactions.sort((a, b) => b.date.compareTo(a.date));
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Riwayat Transaksi'),
         backgroundColor: Colors.white,
         elevation: 1,
         foregroundColor: Colors.black,
+        automaticallyImplyLeading: false,
       ),
       body: Column(
         children: [
           _buildFilterArea(),
-
           Expanded(
-            child: filteredTransactions.isEmpty 
-            ? const Center(child: Text("Belum ada transaksi"))
-            : StickyGroupedListView<TransactionModel, DateTime>(
-                elements: filteredTransactions,
-                groupBy: (transaction) => DateTime(
-                  transaction.date.year,
-                  transaction.date.month,
-                  transaction.date.day,
-                ),
-                groupSeparatorBuilder: (transaction) => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  color: Colors.grey[200],
-                  child: Text(
-                    _formatGroupHeader(transaction.date),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+            child: filteredTransactions.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.history, size: 60, color: Colors.grey[300]),
+                        const SizedBox(height: 10),
+                        const Text("Belum ada transaksi", style: TextStyle(color: Colors.grey)),
+                      ],
+                    ),
+                  )
+                : StickyGroupedListView<TransactionModel, DateTime>(
+                    elements: filteredTransactions,
+                    groupBy: (transaction) => DateTime(
+                      transaction.date.year,
+                      transaction.date.month,
+                      transaction.date.day,
+                    ),
+                    groupSeparatorBuilder: (transaction) => Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      color: Colors.grey[200],
+                      child: Text(
+                        _formatGroupHeader(transaction.date),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    itemBuilder: (context, transaction) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: TransactionTile(transaction: transaction),
+                    ),
+                    order: StickyGroupedListOrder.DESC,
                   ),
-                ),
-                itemBuilder: (context, transaction) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: TransactionTile(transaction: transaction),
-                ),
-                order: StickyGroupedListOrder.DESC,
-                itemScrollController: GroupedItemScrollController(),
-              ),
           ),
         ],
       ),
@@ -92,32 +101,36 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
 
   Widget _buildFilterArea() {
     return Container(
-        padding: const EdgeInsets.all(16),
-        color: Colors.white,
-        child: Column(
-          children: [
-             TextField(
-                decoration: InputDecoration(
-                  hintText: 'Cari transaksi...',
-                  prefixIcon: const Icon(Icons.search),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
-                  filled: true,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                onChanged: (val) => setState(() => _searchQuery = val),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildFilterChip('Semua'),
-                  _buildFilterChip('Uang Masuk'),
-                  _buildFilterChip('Uang Keluar'),
-                ],
-              )
-          ],
-        ),
-      );
+      padding: const EdgeInsets.all(16),
+      color: Colors.white,
+      child: Column(
+        children: [
+          TextField(
+            decoration: InputDecoration(
+              hintText: 'Cari transaksi...',
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+              filled: true,
+              contentPadding: EdgeInsets.zero,
+            ),
+            onChanged: (val) => setState(() => _searchQuery = val),
+          ),
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildFilterChip('Semua'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Uang Masuk'),
+                const SizedBox(width: 8),
+                _buildFilterChip('Uang Keluar'),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   Widget _buildFilterChip(String label) {

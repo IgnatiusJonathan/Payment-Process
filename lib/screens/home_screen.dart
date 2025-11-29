@@ -5,9 +5,10 @@ import '../widgets/navbar.dart';
 import '../models/user.dart';
 import '../widgets/topup_popup.dart';
 import '../widgets/transfer_popup.dart';
-import '../screens/checkout_screen.dart'; // Agar bisa pindah ke checkout
-import '../provider/transaction_provider.dart'; // Agar TopUp terekam di history
-import '../models/transaction_model.dart'; // Agar mengenali tipe data transaksi
+// import integrasi (farouq)
+import '../screens/checkout_screen.dart';
+import '../provider/transaction_provider.dart';
+import '../models/transaction_model.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   final User user;
@@ -51,7 +52,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       blurRadius: 10,
                       offset: Offset(0, 4),

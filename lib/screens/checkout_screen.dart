@@ -173,28 +173,54 @@ class _CheckoutPageState extends State<CheckoutPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Masukkan PIN'),
-          content: const TextField(
-            obscureText: true,
-            keyboardType: TextInputType.number,
-            maxLength: 6,
-            decoration: InputDecoration(hintText: 'Masukkan 6 digit PIN'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('BATAL'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('KONFIRMASI'),
-            ),
-          ],
+        return Consumer(
+          builder: (context, ref, child) {
+            return AlertDialog(
+              title: const Text('Masukkan PIN'),
+              content: const TextField(
+                obscureText: true,
+                keyboardType: TextInputType.number,
+                maxLength: 6,
+                decoration: InputDecoration(hintText: 'Masukkan 6 digit PIN'),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('BATAL'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    String cleanString = totalTransfer.replaceAll(RegExp(r'[^0-9]'), '');
+                    double amount = double.tryParse(cleanString) ?? 0;
+
+                    final newTransaction = TransactionModel(
+                      id: DateTime.now().millisecondsSinceEpoch.toString(),
+                      date: DateTime.now(),
+                      type: TransactionType.payment, 
+                      status: TransactionStatus.success,
+                      description: 'Pembayaran $namaApp',
+                      amount: amount,
+                      isIncome: false,
+                    );
+
+                    ref.read(transactionProvider.notifier).addTransaction(newTransaction);
+
+                    Navigator.of(context).pop(); 
+                    
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Pembayaran Berhasil! Cek History.'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  },
+                  child: const Text('KONFIRMASI'),
+                ),
+              ],
+            );
+          },
         );
       },
     );

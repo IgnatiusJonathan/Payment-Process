@@ -5,6 +5,9 @@ import '../widgets/navbar.dart';
 import '../models/user.dart';
 import '../widgets/topup_popup.dart';
 import '../widgets/transfer_popup.dart';
+import '../screens/checkout_screen.dart'; // Agar bisa pindah ke checkout
+import '../provider/transaction_provider.dart'; // Agar TopUp terekam di history
+import '../models/transaction_model.dart'; // Agar mengenali tipe data transaksi
 
 class HomeScreen extends ConsumerStatefulWidget {
   final User user;
@@ -127,6 +130,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       builder: (context) => TopUpPopup(
                         onTopUp: (amount) {
                           ref.read(userProvider.notifier).topUp(amount);
+
+                          // logika agar merekam transaksi topup ke histori (farouq)
+                          final newTx = TransactionModel(
+                            id: DateTime.now().millisecondsSinceEpoch.toString(),
+                            date: DateTime.now(),
+                            type: TransactionType.topup, 
+                            status: TransactionStatus.success,
+                            description: 'Top Up Saldo',
+                            amount: amount.toDouble(),
+                            isIncome: true, 
+                          );
+                          ref.read(transactionProvider.notifier).addTransaction(newTx);
                         },
                       ),
                     );

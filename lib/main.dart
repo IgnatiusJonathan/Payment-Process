@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:payment_process/screens/main_screen.dart';
-import 'screens/home_screen.dart';
-import 'package:payment_process/screens/history_screen.dart';
+import 'screens/main_screen.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
 
 
 void main() async {

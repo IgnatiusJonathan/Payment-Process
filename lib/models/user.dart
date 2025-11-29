@@ -1,7 +1,7 @@
 class User{
   final String username;
   final String password;
-  final int totalSaldo;
+  int totalSaldo;
 
   User({
     required this.username,

@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:payment_process/models/transaction_model.dart';
-import 'package:payment_process/widgets/transaction_tile.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Import Riverpod
 import 'package:sticky_grouped_list/sticky_grouped_list.dart';
+import 'package:intl/intl.dart';
 
-class HistoryPage extends StatefulWidget {
+import '../models/transaction_model.dart';
+import '../widgets/transaction_tile.dart';
+import '../provider/transaction_provider.dart'; // Import provider yang baru dibuat
+
+// UBAH ke ConsumerStatefulWidget
+class HistoryPage extends ConsumerStatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
 
   @override
-  State<HistoryPage> createState() => _HistoryPageState();
+  ConsumerState<HistoryPage> createState() => _HistoryPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
-  late List<TransactionModel> _transactions;
+class _HistoryPageState extends ConsumerState<HistoryPage> {
+  // Variable filter UI saja
+  String _searchQuery = '';
+  String _selectedChip = 'Semua';
 
-  //code utk menampilkan data transaksi--nanti
-
+  // Helper header tanggal (sama seperti sebelumnya)
   String _formatGroupHeader(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -27,13 +32,29 @@ class _HistoryPageState extends State<HistoryPage> {
     } else if (dateToCompare == yesterday) {
       return 'Kemarin';
     } else {
-      // Format tanggal: Minggu, 10 November 2025
       return DateFormat('EEEE, d MMMM yyyy', 'id_ID').format(date);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // 1. AMBIL DATA REAL DARI PROVIDER
+    // ref.watch artinya: "Kalau ada transaksi baru, halaman ini refresh otomatis"
+    final allTransactions = ref.watch(transactionProvider);
+
+    // 2. LOGIKA FILTER (Filter data dari provider, bukan mock data)
+    final filteredTransactions = allTransactions.where((t) {
+      // Filter Text
+      final matchesSearch = t.description.toLowerCase().contains(_searchQuery.toLowerCase());
+      
+      // Filter Chip
+      bool matchesChip = true;
+      if (_selectedChip == 'Uang Masuk') matchesChip = t.isIncome;
+      if (_selectedChip == 'Uang Keluar') matchesChip = !t.isIncome;
+      
+      return matchesSearch && matchesChip;
+    }).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Riwayat Transaksi'),
@@ -43,103 +64,81 @@ class _HistoryPageState extends State<HistoryPage> {
       ),
       body: Column(
         children: [
-          // --- AREA FILTER (Akan kita tambahkan di Langkah 5) ---
+          // Widget Filter (Code sama seperti sebelumnya, dipersingkat di sini)
           _buildFilterArea(),
 
-          // --- DAFTAR TRANSAKSI ---
+          // List Transaksi
           Expanded(
-            child: StickyGroupedListView<TransactionModel, DateTime>(
-              elements: _transactions, // Data kita
-
-              // 1. Pengelompokan
-              groupBy: (transaction) {
-                // Kelompokkan berdasarkan Hari, Bulan, dan Tahun (abaikan jam/menit)
-                return DateTime(
+            child: filteredTransactions.isEmpty 
+            ? const Center(child: Text("Belum ada transaksi"))
+            : StickyGroupedListView<TransactionModel, DateTime>(
+                elements: filteredTransactions,
+                groupBy: (transaction) => DateTime(
                   transaction.date.year,
                   transaction.date.month,
                   transaction.date.day,
-                );
-              },
-
-              // 2. Header Grup (Tanggal)
-              groupSeparatorBuilder: (transaction) => Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                color: Colors.grey[200],
-                child: Text(
-                  _formatGroupHeader(transaction.date),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+                ),
+                groupSeparatorBuilder: (transaction) => Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  color: Colors.grey[200],
+                  child: Text(
+                    _formatGroupHeader(transaction.date),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
-              ),
-
-              // 3. Item Transaksi
-              itemBuilder: (context, transaction) {
-                return Padding(
+                itemBuilder: (context, transaction) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: TransactionTile(transaction: transaction),
-                );
-              },
-
-              // 4. Urutan
-              order: StickyGroupedListOrder.DESC, // Urutan grup (tanggal terbaru di atas)
-              itemScrollController: GroupedItemScrollController(),
-            ),
+                ),
+                order: StickyGroupedListOrder.DESC,
+                itemScrollController: GroupedItemScrollController(),
+              ),
           ),
         ],
       ),
     );
   }
 
-  // Widget placeholder untuk filter
   Widget _buildFilterArea() {
+    // ... Copy bagian _buildFilterArea dan _buildFilterChip dari kode sebelumnya ...
+    // Pastikan di TextField onChanged: (val) => setState(() => _searchQuery = val);
+    // Pastikan di FilterChip onSelected: (val) => setState(() => _selectedChip = label);
     return Container(
-      padding: const EdgeInsets.all(16),
-      color: Colors.white,
-      child: Column(
-        children: [
-          // 1. Search Bar
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Cari transaksi...',
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30),
-                borderSide: BorderSide.none,
+        padding: const EdgeInsets.all(16),
+        color: Colors.white,
+        child: Column(
+          children: [
+             TextField(
+                decoration: InputDecoration(
+                  hintText: 'Cari transaksi...',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(30)),
+                  filled: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                onChanged: (val) => setState(() => _searchQuery = val),
               ),
-              filled: true,
-              fillColor: Colors.grey[200],
-              contentPadding: EdgeInsets.zero,
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildFilterChip('Semua'),
-              _buildFilterChip('Uang Masuk'),
-              _buildFilterChip('Uang Keluar'),
-            ],
-          )
-        ],
-      ),
-    );
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildFilterChip('Semua'),
+                  _buildFilterChip('Uang Masuk'),
+                  _buildFilterChip('Uang Keluar'),
+                ],
+              )
+          ],
+        ),
+      );
   }
 
   Widget _buildFilterChip(String label) {
     return ChoiceChip(
       label: Text(label),
-      selected: label == 'Semua',
+      selected: _selectedChip == label,
       onSelected: (selected) {
+        if (selected) setState(() => _selectedChip = label);
       },
-      backgroundColor: Colors.grey[200],
-      selectedColor: Colors.blue[100],
-      labelStyle: TextStyle(
-        color: label == 'Semua' ? Colors.blue[800] : Colors.black,
-        fontWeight: FontWeight.bold
-      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:payment_process/screens/main_screen.dart';
+import 'screens/home_screen.dart';
 import 'package:payment_process/screens/history_page.dart';
 
 
@@ -33,8 +34,8 @@ class MyApp extends StatelessWidget {
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           backgroundColor: Color.fromARGB(255, 48, 62, 82),
-          selectedItemColor: Color.fromARGB(75, 255, 255, 255),
-          unselectedItemColor: Color.fromARGB(42, 255, 255, 255)
+          selectedItemColor: Color.fromARGB(120, 255, 255, 255),
+          unselectedItemColor: Color.fromARGB(90, 255, 255, 255)
         ),
         textTheme: const TextTheme(
           displayLarge: TextStyle(color: Colors.white),

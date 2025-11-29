@@ -1,31 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/transaction_model.dart';
-import '../provider/transaction_provider.dart';
+import '../widgets/checkout/checkout_info.dart';
+import '../widgets/checkout/checkout_timer.dart';
+import '../widgets/checkout/checkout_payment.dart';
+import '../widgets/checkout/pin_dialog.dart';
 
-class CheckoutPage extends StatefulWidget {
-  const CheckoutPage({super.key});
+class CheckoutScreen extends ConsumerStatefulWidget {
+  final String paymentType;
+  final double amount;
+  final String transactionType;
+
+  const CheckoutScreen({
+    super.key,
+    required this.paymentType,
+    required this.amount,
+    required this.transactionType,
+  });
 
   @override
-  State<CheckoutPage> createState() => _CheckoutPageState();
+  ConsumerState<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
-class _CheckoutPageState extends State<CheckoutPage> {
-  final String hargaTotal = "Rp 100.000";
-  final String biayaTransfer = "Rp 1.000";
-  final String totalTransfer = "Rp 101.000";
+class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   int waktuMundur = 600;
-  final String namaApp = "Masih No Name";
-  final String nomorAkun = "(Nanti)";
+  bool _dalamProses = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text('Checkout'),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        elevation: Theme.of(context).appBarTheme.elevation,
+        foregroundColor: Theme.of(context).appBarTheme.foregroundColor,
+        title: Text(
+          'Checkout - ${widget.transactionType.toUpperCase()}',
+          style: const TextStyle(color: Colors.white),
+        ),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {},
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Padding(
@@ -33,202 +47,131 @@ class _CheckoutPageState extends State<CheckoutPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            infoPembayaran(),
-
+            CheckoutInfoSection(
+              paymentType: widget.paymentType,
+              amount: widget.amount,
+              transactionType: widget.transactionType,
+            ),
             const SizedBox(height: 24),
-
-            hitungMundur(),
-
+            CheckoutTimerSection(waktuMundur: waktuMundur),
             const SizedBox(height: 24),
-
-            tombolBayar(),
+            CheckoutPaymentSection(
+              transactionType: widget.transactionType,
+              dalamProses: _dalamProses,
+              bayarTombol: _dalamProses ? null : _showPinDialog,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget infoPembayaran() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Rincian Pembayaran',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            _buildInfoRow('Total Belanja', hargaTotal),
-            _buildInfoRow('Biaya Transfer', biayaTransfer),
-            const Divider(),
-            _buildInfoRow(
-              'Total Bayar',
-              totalTransfer,
-              isBold: true,
-              textColor: Colors.blue,
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Transfer ke:',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text('$namaApp - $nomorAkun'),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(
-    String label,
-    String value, {
-    bool isBold = false,
-    Color? textColor,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-              color: textColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget hitungMundur() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.orange[50],
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.timer, color: Colors.orange),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Selesaikan pembayaran dalam:',
-                  style: TextStyle(fontSize: 12),
-                ),
-                Text(
-                  formatHitung(waktuMundur),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.orange,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget tombolBayar() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          panelPin();
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blue,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-        child: const Text(
-          'BAYAR SEKARANG',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-        ),
-      ),
-    );
-  }
-
-  void panelPin() {
+  void _showPinDialog() {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return Consumer(
-          builder: (context, ref, child) {
-            return AlertDialog(
-              title: const Text('Masukkan PIN'),
-              content: const TextField(
-                obscureText: true,
-                keyboardType: TextInputType.number,
-                maxLength: 6,
-                decoration: InputDecoration(hintText: 'Masukkan 6 digit PIN'),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('BATAL'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    String cleanString = totalTransfer.replaceAll(RegExp(r'[^0-9]'), '');
-                    double amount = double.tryParse(cleanString) ?? 0;
-
-                    final newTransaction = TransactionModel(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(),
-                      date: DateTime.now(),
-                      type: TransactionType.payment, 
-                      status: TransactionStatus.success,
-                      description: 'Pembayaran $namaApp',
-                      amount: amount,
-                      isIncome: false,
-                    );
-
-                    ref.read(transactionProvider.notifier).addTransaction(newTransaction);
-
-                    Navigator.of(context).pop(); 
-                    
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Pembayaran Berhasil! Cek History.'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  },
-                  child: const Text('KONFIRMASI'),
-                ),
-              ],
-            );
-          },
-        );
-      },
+      builder: (context) => PinDialog(onConfirm: _prosesTransaksi),
     );
   }
 
-  String formatHitung(int seconds) {
-    int minutes = seconds ~/ 60;
-    int remainingSeconds = seconds % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
+  Future<void> _prosesTransaksi() async {
+    if (_dalamProses) return;
+    
+    setState(() => _dalamProses = true);
+
+    try {
+      await Future.delayed(const Duration(seconds: 2));
+      
+      if (context.mounted) {
+        Navigator.of(context).pop();
+        _suksesPopup();
+      }
+    } catch (e) {
+      if (context.mounted) {
+        _errorPopup(e.toString());
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _dalamProses = false);
+      }
+    }
+  }
+
+  void _suksesPopup() {
+    showDialog(
+      context: context,
+      builder: (context) => _buatSuksesPopup(),
+    ).then((_) {
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
+    });
+  }
+
+  void _errorPopup(String error) {
+    showDialog(
+      context: context,
+      builder: (context) => _buatErrorPopup(error),
+    );
+  }
+
+  Widget _buatSuksesPopup() {
+    final theme = Theme.of(context);
+    
+    return AlertDialog(
+      backgroundColor: theme.colorScheme.tertiary,
+      title: Text(
+        'Transaksi Berhasil',
+        style: TextStyle(
+          color: theme.colorScheme.onPrimary,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: Text(
+        '${widget.transactionType == 'transfer' ? 'Transfer' : 'Top-Up'} sebesar Rp ${(widget.amount.toInt())} berhasil.',
+        style: TextStyle(color: theme.colorScheme.onPrimary),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            Navigator.of(context).pop();
+          },
+          style: TextButton.styleFrom(
+            foregroundColor: theme.colorScheme.primary,
+          ),
+          child: const Text('OK'),
+          // Lain kali ubah jadi button
+        ),
+      ],
+    );
+  }
+
+  Widget _buatErrorPopup(String error) {
+    final theme = Theme.of(context);
+    
+    return AlertDialog(
+      backgroundColor: theme.colorScheme.tertiary,
+      title: Text(
+        'Transaksi Gagal',
+        style: TextStyle(
+          color: Colors.red.shade300,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      content: Text(
+        'Terjadi kesalahan: $error',
+        style: TextStyle(color: theme.colorScheme.onPrimary),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          style: TextButton.styleFrom(
+            foregroundColor: theme.colorScheme.primary,
+          ),
+          child: const Text('OK'),
+          // Lain kali ubah jadi button
+        ),
+      ],
+    );
   }
 }

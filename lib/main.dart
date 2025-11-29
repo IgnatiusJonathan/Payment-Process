@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:payment_process/screens/main_screen.dart';
 import 'screens/home_screen.dart';
-import 'package:payment_process/screens/history_page.dart';
+import 'package:payment_process/screens/history_screen.dart';
 
 
 void main(){

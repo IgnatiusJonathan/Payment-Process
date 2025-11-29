@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:payment_process/screens/dashboard_screen.dart';
+import 'package:payment_process/screens/home_screen.dart';
 import 'package:payment_process/screens/history_screen.dart';
 import 'package:payment_process/screens/profile_screen.dart';
-import 'home_screen.dart';
+import '../models/user.dart' as user_model;
+import '../provider/user_provider.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final user_model.User user;
+
+  const MainScreen({super.key, required this.user});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -14,11 +17,17 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [
-    const DashboardScreen(),
-    const HistoryScreen(),
-    const ProfileScreen(),
-  ];
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      HomeScreen(user: widget.user),
+      const HistoryPage(),
+      const ProfileScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
           index: 0,
           icon: Icons.dashboard_outlined,
           activeIcon: Icons.dashboard_rounded,
-          label: 'Dashboard',
+          label: 'Home',
         ),
         tombolNav(
           context: context,

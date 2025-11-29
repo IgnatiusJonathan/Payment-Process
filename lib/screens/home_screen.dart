@@ -168,6 +168,33 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   )
                 )
               ),
+              // tombol baru checkout (farouq)
+              const SizedBox(height: 30),
+              SizedBox(width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CheckoutPage()),
+                  );
+                },
+                
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange, // Beda warna biar menarik
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                child: const Text(
+                  "Bayar / Checkout",
+                  style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white, // Text putih
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ),
+            ),
             ])
           )
         )

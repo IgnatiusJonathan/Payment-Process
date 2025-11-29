@@ -5,9 +5,8 @@ import 'package:intl/intl.dart';
 
 import '../models/transaction_model.dart';
 import '../widgets/transaction_tile.dart';
-import '../provider/transaction_provider.dart'; // Import provider yang baru dibuat
+import '../provider/transaction_provider.dart';
 
-// UBAH ke ConsumerStatefulWidget
 class HistoryPage extends ConsumerStatefulWidget {
   const HistoryPage({Key? key}) : super(key: key);
 
@@ -16,11 +15,9 @@ class HistoryPage extends ConsumerStatefulWidget {
 }
 
 class _HistoryPageState extends ConsumerState<HistoryPage> {
-  // Variable filter UI saja
   String _searchQuery = '';
   String _selectedChip = 'Semua';
 
-  // Helper header tanggal (sama seperti sebelumnya)
   String _formatGroupHeader(DateTime date) {
     final now = DateTime.now();
     final today = DateTime(now.year, now.month, now.day);
@@ -38,16 +35,12 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 1. AMBIL DATA REAL DARI PROVIDER
-    // ref.watch artinya: "Kalau ada transaksi baru, halaman ini refresh otomatis"
+
     final allTransactions = ref.watch(transactionProvider);
 
-    // 2. LOGIKA FILTER (Filter data dari provider, bukan mock data)
     final filteredTransactions = allTransactions.where((t) {
-      // Filter Text
       final matchesSearch = t.description.toLowerCase().contains(_searchQuery.toLowerCase());
       
-      // Filter Chip
       bool matchesChip = true;
       if (_selectedChip == 'Uang Masuk') matchesChip = t.isIncome;
       if (_selectedChip == 'Uang Keluar') matchesChip = !t.isIncome;
@@ -64,10 +57,8 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
       ),
       body: Column(
         children: [
-          // Widget Filter (Code sama seperti sebelumnya, dipersingkat di sini)
           _buildFilterArea(),
 
-          // List Transaksi
           Expanded(
             child: filteredTransactions.isEmpty 
             ? const Center(child: Text("Belum ada transaksi"))
@@ -100,9 +91,6 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
   }
 
   Widget _buildFilterArea() {
-    // ... Copy bagian _buildFilterArea dan _buildFilterChip dari kode sebelumnya ...
-    // Pastikan di TextField onChanged: (val) => setState(() => _searchQuery = val);
-    // Pastikan di FilterChip onSelected: (val) => setState(() => _selectedChip = label);
     return Container(
         padding: const EdgeInsets.all(16),
         color: Colors.white,

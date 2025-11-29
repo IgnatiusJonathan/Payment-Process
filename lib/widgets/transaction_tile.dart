@@ -1,13 +1,11 @@
-// lib/widgets/transaction_tile.dart
 import 'package:flutter/material.dart';
 import 'package:payment_process/models/transaction_model.dart';
 import 'package:intl/intl.dart';
 
 class TransactionTile extends StatelessWidget {
   final TransactionModel transaction;
-  const TransactionTile({Key? key, required this.transaction}) : super(key: key);
+  const TransactionTile({super.key, required this.transaction});
 
-  // Helper untuk memilih ikon
   IconData _getIcon(TransactionType type) {
     switch (type) {
       case TransactionType.payment:
@@ -54,18 +52,15 @@ class TransactionTile extends StatelessWidget {
         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
       ),
       subtitle: Text(
-        // Format tanggal: 12 Nov, 14:30
         DateFormat('d MMM, HH:mm', 'id_ID').format(transaction.date),
         style: const TextStyle(fontSize: 12),
       ),
 
-      // 3. JUMLAH & STATUS
       trailing: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            // Tambah + atau - dan beri warna
             '${transaction.isIncome ? '+' : '-'}${_formatCurrency(transaction.amount)}',
             style: TextStyle(
               fontWeight: FontWeight.bold,
@@ -75,7 +70,7 @@ class TransactionTile extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            transaction.status.name.toUpperCase(), // "SUCCESS", "PENDING"
+            transaction.status.name.toUpperCase(),
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.bold,
@@ -85,11 +80,7 @@ class TransactionTile extends StatelessWidget {
         ],
       ),
 
-      // Aksi saat di-tap (kita siapkan untuk Langkah 5)
-      onTap: () {
-         // Navigator.push(... ke halaman detail);
-         print('Tap on ${transaction.id}');
-      },
+      onTap: () {},
     );
   }
 }

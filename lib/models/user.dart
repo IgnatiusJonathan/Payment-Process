@@ -1,11 +1,15 @@
 class User{
+  final int userId;
   final String username;
   final String password;
   int totalSaldo;
+  bool isLoggedIn;
 
   User({
+    required this.userId,
     required this.username,
     required this.password,
     required this.totalSaldo,
+    this.isLoggedIn = false,
   });
 }

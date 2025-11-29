@@ -8,7 +8,7 @@ import '../widgets/transaction_tile.dart';
 import '../provider/transaction_provider.dart';
 
 class HistoryPage extends ConsumerStatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+  const HistoryPage({super.key});
 
   @override
   ConsumerState<HistoryPage> createState() => _HistoryPageState();

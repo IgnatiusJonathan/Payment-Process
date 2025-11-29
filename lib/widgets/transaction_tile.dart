@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:payment_process/models/transaction_model.dart';
+import '../screens/transaction_detail_page.dart';
 import 'package:intl/intl.dart';
 
 class TransactionTile extends StatelessWidget {
@@ -80,7 +81,13 @@ class TransactionTile extends StatelessWidget {
         ],
       ),
 
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TransactionDetailPage(transaction: transaction),
+          ),
+        );
+      },
     );
   }
 }

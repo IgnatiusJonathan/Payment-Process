@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'screens/main_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'models/user.dart' as user_model;
 
 
 
@@ -21,6 +22,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext konteks) {
+    final defaultUser = user_model.User(
+      userId: 1,
+      username: "JansenEhe",
+      password: "JansenJansen",
+      totalSaldo: 1000000,
+      isLoggedIn: true,
+    );
+    
     return MaterialApp(
       title: 'Scannabit',
       theme: ThemeData(
@@ -55,7 +64,7 @@ class MyApp extends StatelessWidget {
           titleSmall: TextStyle(color: Colors.white),
         ),
       ),
-      home: const MainScreen(),
+      home: const MainScreen(user: defaultUser),
       debugShowCheckedModeBanner: false,
     );
   }

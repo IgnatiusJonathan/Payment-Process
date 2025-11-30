@@ -33,7 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          // FITUR LOGIN DI ATAS
+          // FITUR LOGIN 
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text("Log In", style: TextStyle(color: Color(0xFF0096C7), fontWeight: FontWeight.bold)),
@@ -51,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
             const Text("Create Phantom Wallet account by completing the data below", style: TextStyle(color: Colors.grey, fontSize: 14)),
             const SizedBox(height: 30),
 
-            // --- USERNAME ---
+            // USERNAME 
             const Text("Username", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -68,7 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 12),
 
-            // --- EMAIL ---
+            //  EMAIL 
             const Text("Email", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -85,7 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 12),
 
-            // --- PHONE ---
+            //  PHONE
             const Text("Phone Number", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -99,12 +99,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 hintStyle: const TextStyle(color: Colors.grey),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
-                prefixIcon: const Icon(Icons.flag, color: Colors.white), // Hiasan bendera
+                prefixIcon: const Icon(Icons.flag, color: Colors.white),
               ),
             ),
             const SizedBox(height: 12),
 
-            // --- PASSWORD ---
+            //  PASSWORD 
             const Text("Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -125,7 +125,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             
-            // Password Requirements (Visual)
+            // Password Requirements 
             const SizedBox(height: 5),
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -137,7 +137,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 15),
 
-            // --- CONFIRM PASSWORD ---
+            //  CONFIRM PASSWORD 
             const Text("Confirm Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -160,7 +160,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
             const SizedBox(height: 40),
 
-            // --- TOMBOL CREATE ACCOUNT ---
+            //  TOMBOL CREATE ACCOUNT
             SizedBox(
               width: double.infinity,
               height: 50,

@@ -41,22 +41,81 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             const Text("Enter the email address and username for reset password.", style: TextStyle(color: Colors.grey, fontSize: 14)),
             const SizedBox(height: 30),
 
-            _buildLabel("Username"),
-            _buildTextField(controller: _usernameController, hint: "Enter Username"),
+            // --- USERNAME ---
+            const Text("Username", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _usernameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: const Color(0xFF1C273A),
+                hintText: "Enter Username",
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              ),
+            ),
+            const SizedBox(height: 12),
 
-            _buildLabel("Email Address"),
-            _buildTextField(controller: _emailController, hint: "Enter Email Address"),
+            // --- EMAIL ---
+            const Text("Email Address", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _emailController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: const Color(0xFF1C273A),
+                hintText: "Enter Email Address",
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              ),
+            ),
 
-            const Divider(color: Colors.grey, height: 40),
+            const SizedBox(height: 20),
+            const Divider(color: Colors.grey),
+            const SizedBox(height: 20),
             
-            _buildLabel("New Password"),
-            _buildTextField(controller: _newPassController, hint: "Enter New Password", isPassword: true),
+            // --- NEW PASSWORD ---
+            const Text("New Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _newPassController,
+              obscureText: true,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: const Color(0xFF1C273A),
+                hintText: "Enter New Password",
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              ),
+            ),
+            const SizedBox(height: 12),
 
-            _buildLabel("Confirm Password"),
-            _buildTextField(controller: _confirmPassController, hint: "Confirm New Password", isPassword: true),
+            // --- CONFIRM PASSWORD ---
+            const Text("Confirm Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _confirmPassController,
+              obscureText: true,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: const Color(0xFF1C273A),
+                hintText: "Confirm New Password",
+                hintStyle: const TextStyle(color: Colors.grey),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+              ),
+            ),
 
             const SizedBox(height: 40),
 
+            // --- TOMBOL RESET ---
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -76,7 +135,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
                    if (success && context.mounted) {
                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Password berhasil direset! Silakan login.")));
-                     Navigator.pop(context);
+                     Navigator.pop(context); // Kembali ke Login
                    } else if (context.mounted) {
                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Gagal! Username & Email tidak cocok.")));
                    }
@@ -86,39 +145,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 child: isLoading 
-                  ? const CircularProgressIndicator(color: Colors.white)
+                  ? const CircularProgressIndicator(color: Colors.white) 
                   : const Text("Reset Password", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildLabel(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0, top: 12.0),
-      child: Text(text, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller, 
-    required String hint, 
-    bool isPassword = false
-  }) {
-    return TextField(
-      controller: controller,
-      obscureText: isPassword,
-      style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: const Color(0xFF1C273A),
-        hintText: hint,
-        hintStyle: const TextStyle(color: Colors.grey),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
       ),
     );
   }

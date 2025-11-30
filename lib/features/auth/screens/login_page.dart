@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-// Import Provider & Model
 import '../providers/auth_provider.dart'; 
-import '../../../screens/home_screen.dart'; 
-import '../../../models/user.dart' as real_user; 
+import '../../../screens/home_screen.dart'; // Import Home Screen Asli
+import '../../../models/user.dart' as real_user; // Import Model User Asli
 
 import 'register_page.dart';
 import 'forgot_password_page.dart';
@@ -26,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
     final isLoading = Provider.of<AuthProvider>(context).isLoading;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0B1426),
+      backgroundColor: const Color(0xFF0B1426), // Background Dark Blue
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -48,42 +47,31 @@ class _LoginPageState extends State<LoginPage> {
             const Text("Log In to Phantom Wallet",
                 style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            const Text("Use the registered email and password to log in",
+            const Text("Use the registered email and password to log in to your account",
                 style: TextStyle(color: Colors.grey, fontSize: 14)),
             const SizedBox(height: 40),
 
-            // LABEL EMAIL
-            const Padding(
-              padding: EdgeInsets.only(bottom: 8.0),
-              child: Text("Email Address / Phone Number", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            ),
-            
-            // INPUT EMAIL (LANGSUNG DITULIS DISINI)
+            // --- INPUT EMAIL / PHONE ---
+            const Text("Email Address / Phone Number", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
             TextField(
               controller: _identifierController,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(
                 filled: true,
-                fillColor: const Color(0xFF1C273A),
+                fillColor: const Color(0xFF1C273A), // Input Field Color
                 hintText: "Enter email or phone",
                 hintStyle: const TextStyle(color: Colors.grey),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8), 
-                  borderSide: BorderSide.none
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
               ),
             ),
             
             const SizedBox(height: 20),
 
-            // LABEL PASSWORD
-            const Padding(
-              padding: EdgeInsets.only(bottom: 8.0),
-              child: Text("Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            ),
-
-            // INPUT PASSWORD (LANGSUNG DITULIS DISINI)
+            // --- INPUT PASSWORD ---
+            const Text("Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
             TextField(
               controller: _passwordController,
               obscureText: _isObscure,
@@ -94,22 +82,15 @@ class _LoginPageState extends State<LoginPage> {
                 hintText: "Enter password",
                 hintStyle: const TextStyle(color: Colors.grey),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8), 
-                  borderSide: BorderSide.none
-                ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
                 suffixIcon: IconButton(
                   icon: Icon(_isObscure ? Icons.visibility_off : Icons.visibility, color: Colors.grey),
-                  onPressed: () {
-                    setState(() {
-                      _isObscure = !_isObscure;
-                    });
-                  },
+                  onPressed: () => setState(() => _isObscure = !_isObscure),
                 ),
               ),
             ),
 
-            // Forgot Password Link
+            // --- FORGOT PASSWORD LINK ---
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
@@ -122,7 +103,7 @@ class _LoginPageState extends State<LoginPage> {
 
             const SizedBox(height: 30),
 
-            // TOMBOL LOGIN
+            // --- TOMBOL MASUK ---
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -138,16 +119,17 @@ class _LoginPageState extends State<LoginPage> {
                   bool success = await provider.login(_identifierController.text, _passwordController.text);
                   
                   if (success && context.mounted) {
-                    // Membuat Data User Sesuai Model
+                    // MAPPING DATA KE MODEL USER ASLI
                     final userForHome = real_user.User(
-                      userId: 1, 
+                      userId: 1, // Dummy ID
                       username: provider.currentUser?.username ?? "User",
                       email: provider.currentUser?.email ?? "email@test.com",
-                      password: _passwordController.text, 
+                      password: _passwordController.text,
                       totalSaldo: 0, 
                       isLoggedIn: true,
                     );
 
+                    // PINDAH KE HOME SCREEN
                     Navigator.pushReplacement(
                       context, 
                       MaterialPageRoute(builder: (context) => HomeScreen(user: userForHome))
@@ -157,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0096C7),
+                  backgroundColor: const Color(0xFF0096C7), // Warna Tombol Cyan
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 child: isLoading 

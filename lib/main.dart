@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'screens/account_screen.dart';
-import 'screens/home_screen.dart';
-=======
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:intl/date_symbol_data_local.dart';
@@ -13,7 +9,6 @@ import 'features/auth/providers/auth_provider.dart';
 import 'database/database.dart';
 import 'database/user_repository.dart';
 import 'models/user.dart' as user_model;
->>>>>>> e6cf493061cf53c3c32b8b683016569379811294
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,21 +17,6 @@ void main() async {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-<<<<<<< HEAD
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Payment Process',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: const MainNavigation(),
-      debugShowCheckedModeBanner: false,
-=======
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
@@ -114,59 +94,9 @@ class _MyAppState extends ConsumerState<MyApp> {
           debugShowCheckedModeBanner: false,
         ),
       ),
->>>>>>> e6cf493061cf53c3c32b8b683016569379811294
     );
   }
 
-<<<<<<< HEAD
-class MainNavigation extends StatefulWidget {
-  const MainNavigation({Key? key}) : super(key: key);
-
-  @override
-  State<MainNavigation> createState() => _MainNavigationState();
-}
-
-class _MainNavigationState extends State<MainNavigation> {
-  int _selectedIndex = 0;
-
-  static final List<Widget> _widgetOptions = <Widget>[
-    const HomeScreen(),
-    Container(
-      color: Colors.white,
-      child: const Center(child: Text('Payment Screen')),
-    ),
-    const AccountScreen(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: _widgetOptions.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.payment),
-            label: 'Payment',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Account',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue[700],
-        onTap: _onItemTapped,
-=======
   Widget _buildLoadingScreen(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 21, 27, 38),
@@ -195,7 +125,11 @@ class _MainNavigationState extends State<MainNavigation> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.error_outline, color: Color.fromARGB(255, 175, 103, 117), size: 64),
+            const Icon(
+              Icons.error_outline,
+              color: Color.fromARGB(255, 175, 103, 117),
+              size: 64,
+            ),
             const SizedBox(height: 20),
             Text(
               'Error: $error',
@@ -284,7 +218,6 @@ class AuthWrapper extends ConsumerWidget {
             ),
           ],
         ),
->>>>>>> e6cf493061cf53c3c32b8b683016569379811294
       ),
     );
   }

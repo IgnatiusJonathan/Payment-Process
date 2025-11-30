@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
 
-class PinDialog extends StatelessWidget {
-  final VoidCallback onConfirm;
+class PinDialog extends StatefulWidget {
+  const PinDialog({super.key});
 
-  const PinDialog({super.key, required this.onConfirm});
+  @override
+  State<PinDialog> createState() => _PinDialogState();
+}
+
+class _PinDialogState extends State<PinDialog> {
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +32,7 @@ class PinDialog extends StatelessWidget {
           style: TextStyle(color: theme.colorScheme.onPrimary),
         ),
         content: TextField(
+          controller: _passwordController,
           obscureText: true,
           keyboardType: TextInputType.text,
           maxLength: 20,
@@ -44,8 +56,7 @@ class PinDialog extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
-              onConfirm();
+              Navigator.pop(context, _passwordController.text);
             },
             style: TextButton.styleFrom(foregroundColor: theme.colorScheme.primary),
             child: const Text('Konfirmasi'),

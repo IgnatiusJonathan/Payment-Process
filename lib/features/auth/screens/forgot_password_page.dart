@@ -41,7 +41,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             const Text("Enter the email address and username for reset password.", style: TextStyle(color: Colors.grey, fontSize: 14)),
             const SizedBox(height: 30),
 
-            // --- USERNAME ---
+            //  USERNAME 
             const Text("Username", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -58,7 +58,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
             const SizedBox(height: 12),
 
-            // --- EMAIL ---
+            //  EMAIL 
             const Text("Email Address", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -78,7 +78,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             const Divider(color: Colors.grey),
             const SizedBox(height: 20),
             
-            // --- NEW PASSWORD ---
+            //  NEW PASSWORD 
             const Text("New Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -96,7 +96,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
             const SizedBox(height: 12),
 
-            // --- CONFIRM PASSWORD ---
+            //  CONFIRM PASSWORD 
             const Text("Confirm Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -115,7 +115,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
             const SizedBox(height: 40),
 
-            // --- TOMBOL RESET ---
+            //  TOMBOL RESET 
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -156,3 +156,4 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     );
   }
 }
+

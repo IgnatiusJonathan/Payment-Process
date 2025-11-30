@@ -48,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(height: 10),
             const Text("Create Account", style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            const Text("Create Phantom Wallet account by completing the data below", style: TextStyle(color: Colors.grey, fontSize: 14)),
+            const Text("Create Scannabit account by completing the data below", style: TextStyle(color: Colors.grey, fontSize: 14)),
             const SizedBox(height: 30),
 
             // USERNAME 
@@ -125,7 +125,6 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             
-            // Password Requirements 
             const SizedBox(height: 5),
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -137,7 +136,6 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 15),
 
-            //  CONFIRM PASSWORD 
             const Text("Confirm Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(

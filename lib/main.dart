@@ -32,12 +32,7 @@ class _MyAppState extends ConsumerState<MyApp> {
   }
 
   Future<void> _initializeApp() async {
-    try {
-      final database = await ref.read(databaseProvider.future);
-      print("Database initialized successfully");
-    } catch (e) {
-      print("Error initializing database: $e");
-    }
+    final database = await ref.read(databaseProvider.future);
   }
 
   @override
@@ -55,7 +50,11 @@ class _MyAppState extends ConsumerState<MyApp> {
       ),
       data: (database) => provider.MultiProvider(
         providers: [
-          provider.ChangeNotifierProvider(create: (_) => AuthProvider()),
+          provider.ChangeNotifierProvider(
+            create: (_) {
+              return AuthProvider(database);
+            },
+          ),
         ],
         child: MaterialApp(
           title: 'Scannabit',
@@ -150,13 +149,47 @@ class _MyAppState extends ConsumerState<MyApp> {
   }
 }
 
-class AuthWrapper extends ConsumerWidget {
+class AuthWrapper extends ConsumerStatefulWidget {
   const AuthWrapper({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends ConsumerState<AuthWrapper> {
+  Future<user_model.User?>? _userFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _userFuture = _getStoredUser();
+  }
+
+  Future<user_model.User?> _getStoredUser() async {
+    final database = await ref.read(databaseProvider.future);
+    final userRepo = UserRepository(database);
+    final users = await userRepo.getAllUsers();
+
+    if (users.isEmpty) {
+      return null;
+    }
+
+    final userData = users.first;
+    return user_model.User(
+      userId: userData['userID'] as int,
+      username: userData['username'] as String,
+      password: userData['password'] as String,
+      totalSaldo: userData['totalSaldo'] as int,
+      isLoggedIn: true,
+      email: userData['email'] as String? ?? '',
+      phone: userData['phone'] as String? ?? '',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder<user_model.User?>(
-      future: _getStoredUser(ref),
+      future: _userFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return _buildAuthLoadingScreen(context);
@@ -167,38 +200,20 @@ class AuthWrapper extends ConsumerWidget {
         }
 
         final user = snapshot.data!;
-        final authProvider = provider.Provider.of<AuthProvider>(
-          context,
-          listen: false,
-        );
-        authProvider.setLoggedIn(user.username);
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final authProvider = provider.Provider.of<AuthProvider>(
+            context,
+            listen: false,
+          );
+          if (authProvider.currentUser?.username != user.username) {
+            authProvider.setLoggedIn(user.username);
+          }
+        });
 
         return MainScreen(user: user);
       },
     );
-  }
-
-  Future<user_model.User?> _getStoredUser(WidgetRef ref) async {
-    try {
-      final database = await ref.read(databaseProvider.future);
-      final userRepo = UserRepository(database);
-      final users = await userRepo.getAllUsers();
-
-      if (users.isEmpty) {
-        return null;
-      }
-
-      final userData = users.first;
-      return user_model.User(
-        userId: userData['userID'] as int,
-        username: userData['username'] as String,
-        password: userData['password'] as String,
-        totalSaldo: userData['totalSaldo'] as int,
-        isLoggedIn: true,
-      );
-    } catch (e) {
-      return null;
-    }
   }
 
   Widget _buildAuthLoadingScreen(BuildContext context) {

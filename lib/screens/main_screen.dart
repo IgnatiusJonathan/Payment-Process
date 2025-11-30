@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:payment_process/screens/home_screen.dart';
 import 'package:payment_process/screens/history_screen.dart';
-import 'package:payment_process/screens/profile_screen.dart';
+import 'package:payment_process/screens/account_screen.dart';
 import '../models/user.dart' as user_model;
 import '../provider/user_provider.dart';
 
@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
     _screens = [
       HomeScreen(user: widget.user),
       const HistoryPage(),
-      const ProfileScreen(),
+      const AccountScreen(),
     ];
   }
 

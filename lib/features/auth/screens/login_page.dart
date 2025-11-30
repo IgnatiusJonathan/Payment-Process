@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart'; 
-import '../../../screens/home_screen.dart'; 
+import '../../../screens/main_screen.dart'; 
 import '../../../models/user.dart' as real_user; 
 
 import 'register_page.dart';
@@ -45,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            const Text("Log In to Phantom Wallet",
+            const Text("Log In to Scannabit",
                 style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             const Text("Use the registered email and password to log in to your account",
@@ -136,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
 
                     Navigator.pushReplacement(
                       context, 
-                      MaterialPageRoute(builder: (context) => HomeScreen(user: userForHome))
+                      MaterialPageRoute(builder: (context) => MainScreen(user: userForHome))
                     );
                   } else if (context.mounted) {
                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Login Gagal! Cek email/password.")));

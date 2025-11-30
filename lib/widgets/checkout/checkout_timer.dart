@@ -1,9 +1,64 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../screens/home_screen.dart';
+import '../../provider/user_provider.dart';
+import '../../models/user.dart';
 
-class CheckoutTimerSection extends StatelessWidget {
+class CheckoutTimerSection extends ConsumerStatefulWidget {
   final int waktuMundur;
 
   const CheckoutTimerSection({super.key, required this.waktuMundur});
+
+  @override
+  ConsumerState<CheckoutTimerSection> createState() => _CheckoutTimerSectionState();
+}
+
+class _CheckoutTimerSectionState extends ConsumerState<CheckoutTimerSection> {
+  late int _waktuMundur;
+  late Timer _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _waktuMundur = widget.waktuMundur;
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (_waktuMundur > 0) {
+        setState(() {
+          _waktuMundur--;
+        });
+      } else {
+        _timer.cancel();
+        final userState = ref.read(userProvider);
+        if (userState != null && mounted) {
+          final user = User(
+            userId: userState.userID,
+            username: userState.username,
+            password: '',
+            totalSaldo: userState.totalSaldo,
+            email: userState.email,
+            phone: userState.phone,
+          );
+          
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen(user: user)),
+            (route) => false,
+          );
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +88,7 @@ class CheckoutTimerSection extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  _formatTimer(waktuMundur),
+                  _formatTimer(_waktuMundur),
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

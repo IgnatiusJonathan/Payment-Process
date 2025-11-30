@@ -33,6 +33,7 @@ class _RegisterPageState extends State<RegisterPage> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
+          // FITUR LOGIN DI ATAS
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text("Log In", style: TextStyle(color: Color(0xFF0096C7), fontWeight: FontWeight.bold)),
@@ -47,10 +48,10 @@ class _RegisterPageState extends State<RegisterPage> {
             const SizedBox(height: 10),
             const Text("Create Account", style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
-            const Text("Create account by completing the data below", style: TextStyle(color: Colors.grey, fontSize: 14)),
+            const Text("Create Phantom Wallet account by completing the data below", style: TextStyle(color: Colors.grey, fontSize: 14)),
             const SizedBox(height: 30),
 
-            // --- INPUT USERNAME ---
+            // --- USERNAME ---
             const Text("Username", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -67,7 +68,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 12),
 
-            // --- INPUT EMAIL ---
+            // --- EMAIL ---
             const Text("Email", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -84,7 +85,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 12),
 
-            // --- INPUT PHONE ---
+            // --- PHONE ---
             const Text("Phone Number", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -98,11 +99,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 hintStyle: const TextStyle(color: Colors.grey),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(8), borderSide: BorderSide.none),
+                prefixIcon: const Icon(Icons.flag, color: Colors.white), // Hiasan bendera
               ),
             ),
             const SizedBox(height: 12),
 
-            // --- INPUT PASSWORD ---
+            // --- PASSWORD ---
             const Text("Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -123,6 +125,7 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             
+            // Password Requirements (Visual)
             const SizedBox(height: 5),
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,7 +137,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             const SizedBox(height: 15),
 
-            // --- INPUT CONFIRM PASSWORD ---
+            // --- CONFIRM PASSWORD ---
             const Text("Confirm Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -157,7 +160,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
             const SizedBox(height: 40),
 
-            // TOMBOL REGISTER
+            // --- TOMBOL CREATE ACCOUNT ---
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -178,7 +181,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   if (success && context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Akun berhasil dibuat! Silakan Login.")));
-                    Navigator.pop(context);
+                    Navigator.pop(context); // Kembali ke Login
                   } else if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Email sudah terdaftar.")));
                   }

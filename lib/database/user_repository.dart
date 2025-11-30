@@ -31,4 +31,14 @@ class UserRepository {
       [newSaldo, userID],
     );
   }
+
+  Future<List<Map<String, Object?>>> getAllUsers() async {
+    try {
+      final result = await db.getAll("SELECT * FROM USERS");
+      return result;
+    } catch (e) {
+      print("Error getting all users: $e");
+      return [];
+    }
+  }
 }

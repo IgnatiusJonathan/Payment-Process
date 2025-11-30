@@ -96,7 +96,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             ),
             const SizedBox(height: 12),
 
-            //  CONFIRM PASSWORD 
             const Text("Confirm Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             TextField(
@@ -135,7 +134,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
                    if (success && context.mounted) {
                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Password berhasil direset! Silakan login.")));
-                     Navigator.pop(context); // Kembali ke Login
+                     Navigator.pop(context);
                    } else if (context.mounted) {
                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Gagal! Username & Email tidak cocok.")));
                    }

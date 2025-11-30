@@ -17,7 +17,6 @@ class TransactionDetailPage extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
-            // Icon Besar
             CircleAvatar(
               radius: 40,
               backgroundColor: transaction.status == TransactionStatus.success ? Colors.green[100] : Colors.red[100],

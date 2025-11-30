@@ -60,7 +60,6 @@ class ProfileHeader extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.edit, color: Colors.white),
                 onPressed: () {
-                  // Navigate to edit profile
                 },
               ),
             ],

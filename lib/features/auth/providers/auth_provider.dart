@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-// Model khusus untuk Auth Provider (Internal)
 class AuthUser {
   final String username;
   final String email;
@@ -18,33 +17,31 @@ class AuthUser {
 class AuthProvider with ChangeNotifier {
   final List<AuthUser> _registeredUsers = [];
   AuthUser? _currentUser;
-  
   bool _isLoading = false;
-  
-  // Getters
+
   bool get isLoading => _isLoading;
   AuthUser? get currentUser => _currentUser;
 
-  // LOGIN
+  // --- LOGIN ---
   Future<bool> login(String identifier, String password) async {
     _setLoading(true);
-    await Future.delayed(const Duration(seconds: 2)); // Simulasi loading
+    await Future.delayed(const Duration(seconds: 2));
 
     try {
-      // Cari user berdasarkan Email ATAU Username ATAU Phone
+      // Cek apakah input cocok dengan Email ATAU Phone dan Password benar
       final user = _registeredUsers.firstWhere(
-        (u) => (u.email == identifier || u.username == identifier || u.phone == identifier) && u.password == password,
+        (u) => (u.email == identifier || u.phone == identifier) && u.password == password,
       );
       _currentUser = user;
       _setLoading(false);
       return true;
     } catch (e) {
       _setLoading(false);
-      return false;
+      return false; // User tidak ditemukan atau password salah
     }
   }
 
-  // REGISTER
+  // --- REGISTER ---
   Future<bool> register(String username, String email, String phone, String password) async {
     _setLoading(true);
     await Future.delayed(const Duration(seconds: 2));
@@ -67,12 +64,13 @@ class AuthProvider with ChangeNotifier {
     return true;
   }
 
-  // RESET PASSWORD
+  // --- RESET PASSWORD ---
   Future<bool> resetPassword(String username, String email, String newPassword) async {
     _setLoading(true);
     await Future.delayed(const Duration(seconds: 2));
 
     try {
+      // Cari user yang username DAN email-nya cocok (Validasi Keamanan)
       final index = _registeredUsers.indexWhere(
         (u) => u.username == username && u.email == email
       );
@@ -84,7 +82,7 @@ class AuthProvider with ChangeNotifier {
         return true;
       }
       _setLoading(false);
-      return false;
+      return false; // Username & Email tidak cocok
     } catch (e) {
       _setLoading(false);
       return false;
@@ -93,6 +91,13 @@ class AuthProvider with ChangeNotifier {
 
   void logout() {
     _currentUser = null;
+    notifyListeners();
+  }
+
+  // Set user as logged in programmatically 
+  void setLoggedIn(String username) {
+    final user = _registeredUsers.firstWhere((u) => u.username == username, orElse: () => AuthUser(username: username, email: '', phone: '', password: ''));
+    _currentUser = user;
     notifyListeners();
   }
 

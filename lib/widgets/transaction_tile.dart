@@ -20,7 +20,7 @@ class TransactionTile extends StatelessWidget {
     }
   }
 
-  // Helper untuk memilih warna status
+  // helper untuk memilih warna status
   Color _getStatusColor(TransactionStatus status) {
     switch (status) {
       case TransactionStatus.success:
@@ -32,7 +32,7 @@ class TransactionTile extends StatelessWidget {
     }
   }
 
-  // Helper untuk format mata uang
+  // helper untuk format mata uang
   String _formatCurrency(double amount) {
     final format = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
     return format.format(amount);
@@ -41,13 +41,11 @@ class TransactionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      // 1. IKON
       leading: CircleAvatar(
         backgroundColor: Colors.grey[200],
         child: Icon(_getIcon(transaction.type), color: Colors.black87),
       ),
 
-      // 2. DESKRIPSI & TANGGAL
       title: Text(
         transaction.description,
         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),

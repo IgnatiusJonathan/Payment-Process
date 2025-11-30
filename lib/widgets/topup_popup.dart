@@ -62,7 +62,21 @@ class _TopUpPopupState extends State<TopUpPopup> {
                 widget.onTopUp(amount);
                 Navigator.pop(context);
               },
-              child: const Text("Confirm"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(120, 0, 94, 255),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text(
+                "Confirm",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         ],

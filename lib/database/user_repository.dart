@@ -10,10 +10,10 @@ class UserRepository {
   final Database db;
   UserRepository(this.db);
 
-  Future<int> createUser(String username, String password) async {
+  Future<int> createUser(String username, String password, String email, String phone) async {
     final result = await db.execute(
-      "INSERT INTO USERS (username, password, totalSaldo) VALUES (?, ?, ?)",
-      [username, password, 0],
+      "INSERT INTO USERS (username, password, email, phone, totalSaldo) VALUES (?, ?, ?, ?, ?)",
+      [username, password, email, phone, 0],
     );
     return result.insertId;
   }
@@ -25,10 +25,36 @@ class UserRepository {
     );
   }
 
+  Future<Map<String, Object?>?> getUserByIdentifier(String identifier) async {
+    final result = await db.getAll(
+      "SELECT * FROM USERS WHERE email = ? OR phone = ?",
+      [identifier, identifier],
+    );
+    
+    if (result.isNotEmpty) {
+      return result.first;
+    }
+    return null;
+  }
+
   Future<void> updateSaldo(int userID, int newSaldo) async {
     await db.execute(
       "UPDATE USERS SET totalSaldo = ? WHERE userID = ?",
       [newSaldo, userID],
+    );
+  }
+
+  Future<void> updateUsername(int userID, String newUsername) async {
+    await db.execute(
+      "UPDATE USERS SET username = ? WHERE userID = ?",
+      [newUsername, userID],
+    );
+  }
+
+  Future<void> updateProfileImage(int userID, String imagePath) async {
+    await db.execute(
+      "UPDATE USERS SET profileImage = ? WHERE userID = ?",
+      [imagePath, userID],
     );
   }
 

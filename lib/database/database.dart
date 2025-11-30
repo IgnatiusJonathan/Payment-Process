@@ -39,14 +39,44 @@ class Database {
           FOREIGN KEY (userID) REFERENCES USERS(userID)
         ) """);
       },
+    ))
+    ..add(SqliteMigration(
+      3,
+      (tx) async {
+        await tx.execute("ALTER TABLE HISTORY ADD COLUMN amount INTEGER DEFAULT 0");
+        await tx.execute("ALTER TABLE HISTORY ADD COLUMN type TEXT DEFAULT 'payment'");
+        await tx.execute("ALTER TABLE HISTORY ADD COLUMN description TEXT DEFAULT ''");
+      },
+    ))
+    ..add(SqliteMigration(
+      4,
+      (tx) async {
+        await tx.execute("ALTER TABLE USERS ADD COLUMN email TEXT DEFAULT ''");
+        await tx.execute("ALTER TABLE USERS ADD COLUMN phone TEXT DEFAULT ''");
+      },
+    ))
+    ..add(SqliteMigration(
+      5,
+      (tx) async {
+        await tx.execute("ALTER TABLE USERS ADD COLUMN profileImage TEXT DEFAULT ''");
+      },
     ));
 
   Future<void> init() async {
+    print("Database: Initializing...");
     final dir = await getApplicationSupportDirectory();
     final path = join(dir.path, 'scannabit.db');
+    print("Database: Path: $path");
 
     _db = SqliteDatabase(path: path);
-    _migrations.migrate(_db);
+    print("Database: Running migrations...");
+    try {
+      await _migrations.migrate(_db);
+      print("Database: Migrations completed.");
+    } catch (e) {
+      print("Database: Migration failed: $e");
+      rethrow;
+    }
   }
 
   void close() async {
@@ -66,7 +96,7 @@ class Database {
     await _db.execute(sql, parameters);
   }
 
-  Future<dynamic> getAll(String sql,
+  Future<List<Map<String, Object?>>> getAll(String sql,
       [List<Object?> parameters = const []]) async {
     return _db.getAll(sql, parameters);
   }

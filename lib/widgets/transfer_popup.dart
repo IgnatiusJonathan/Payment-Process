@@ -81,11 +81,12 @@ class TransferPopup extends StatelessWidget {
                       paymentType: "QR Code",
                       amount: 50000,
                       transactionType: "Transfer",
-
                     )),
                   );
                 },
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(120, 0, 94, 255),
+                  foregroundColor: Colors.white,
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(

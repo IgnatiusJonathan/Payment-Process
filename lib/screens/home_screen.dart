@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../provider/user_provider.dart';
-import '../widgets/navbar.dart';
 import '../models/user.dart';
 import '../widgets/topup_popup.dart';
 import '../widgets/transfer_popup.dart';
@@ -23,6 +22,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context){
+    final currentUser = ref.watch(userProvider);
+
     return Scaffold(
       body:SafeArea(
         child: Padding(
@@ -70,7 +71,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                     SizedBox(height: 12),
                     Text(
-                      "Rp. ${widget.user.totalSaldo}",
+                      "Rp. ${currentUser?.totalSaldo ?? 0}",
                       style: TextStyle(
                         fontSize: 40,
                         fontWeight: FontWeight.bold,
@@ -130,19 +131,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       builder: (context) => TopUpPopup(
                         onTopUp: (amount) {
-                          ref.read(userProvider.notifier).topUp(amount);
+                          final user = ref.read(userProvider);
+                          if (user != null) {
+                            ref.read(userProvider.notifier).topUp(amount);
 
-                          // logika agar merekam transaksi topup ke histori (farouq)
-                          final newTx = TransactionModel(
-                            id: DateTime.now().millisecondsSinceEpoch.toString(),
-                            date: DateTime.now(),
-                            type: TransactionType.topup, 
-                            status: TransactionStatus.success,
-                            description: 'Top Up Saldo',
-                            amount: amount.toDouble(),
-                            isIncome: true, 
-                          );
-                          ref.read(transactionProvider.notifier).addTransaction(newTx);
+                            // logika agar merekam transaksi topup ke histori (farouq)
+                            final newTx = TransactionModel(
+                              id: DateTime.now().millisecondsSinceEpoch.toString(),
+                              date: DateTime.now(),
+                              type: TransactionType.topup, 
+                              status: TransactionStatus.success,
+                              description: 'Top Up Saldo',
+                              amount: amount.toDouble(),
+                              isIncome: true, 
+                            );
+                            ref.read(transactionProvider.notifier).addTransaction(newTx, user.userID);
+                          }
                         },
                       ),
                     );
@@ -169,37 +173,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   )
                 )
               ),
-              // tombol baru checkout (farouq)
-              const SizedBox(height: 30),
-              SizedBox(width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CheckoutScreen(
-                      paymentType: "QR Code",
-                      amount: 50000,
-                      transactionType: "Transfer",
-                    )),
-                  );
-                },
-                
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange, // Beda warna biar menarik
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                child: const Text(
-                  "Bayar / Checkout",
-                  style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white, // Text putih
-                  letterSpacing: 0.5,
-                ),
-              ),
-            ),
-            ),
+              
             ])
           )
         )

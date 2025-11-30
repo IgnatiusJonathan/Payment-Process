@@ -176,7 +176,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const CheckoutPage()),
+                    MaterialPageRoute(builder: (context) => const CheckoutScreen(
+                      paymentType: "QR Code",
+                      amount: 50000,
+                      transactionType: "Transfer",
+                    )),
                   );
                 },
                 

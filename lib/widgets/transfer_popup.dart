@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import '../screens/checkout_screen.dart';
 
 class TransferPopup extends StatelessWidget {
-  final Function(double amount, String paymentType) onTransfer;
-
-  const TransferPopup({super.key, required this.onTransfer});
+  const TransferPopup({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,6 @@ class TransferPopup extends StatelessWidget {
             height: 6,
             width: 60,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
               borderRadius: BorderRadius.circular(10),
             ),
           ),
@@ -47,13 +44,11 @@ class TransferPopup extends StatelessWidget {
             width: 200,
             height: 200,
             decoration: BoxDecoration(
-              color: Colors.grey[200],
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
                   blurRadius: 6,
-                  offset: const Offset(0, 3),
+                  offset: Offset(0, 3),
                 ),
               ],
             ),
@@ -70,7 +65,6 @@ class TransferPopup extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
                   blurRadius: 12,
                   spreadRadius: 2,
                   offset: const Offset(0, 4),
@@ -81,7 +75,15 @@ class TransferPopup extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  onTransfer(50000.0, "QR Code");
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CheckoutScreen(
+                      paymentType: "QR Code",
+                      amount: 50000,
+                      transactionType: "Transfer",
+
+                    )),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 0,
@@ -90,9 +92,9 @@ class TransferPopup extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "Continue",
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),

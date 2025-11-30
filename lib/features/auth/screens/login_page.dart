@@ -1,9 +1,10 @@
+import 'package:flutter/material.dart' as flutter;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart'; 
-import '../../../screens/home_screen.dart'; // Import Home Screen Asli
-import '../../../models/user.dart' as real_user; // Import Model User Asli
+import '../../../screens/home_screen.dart'; 
+import '../../../models/user.dart' as real_user; 
 
 import 'register_page.dart';
 import 'forgot_password_page.dart';
@@ -24,9 +25,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final isLoading = Provider.of<AuthProvider>(context).isLoading;
 
-    return Scaffold(
-      backgroundColor: const Color(0xFF0B1426), // Background Dark Blue
-      appBar: AppBar(
+    return flutter.Scaffold(
+      backgroundColor: const Color(0xFF0B1426),
+      appBar: flutter.AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
@@ -51,15 +52,18 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(color: Colors.grey, fontSize: 14)),
             const SizedBox(height: 40),
 
-            // --- INPUT EMAIL / PHONE ---
-            const Text("Email Address / Phone Number", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            TextField(
+            const Padding(
+              padding: EdgeInsets.only(bottom: 8.0),
+              child: Text("Email Address / Phone Number", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+            
+            // Input Email 
+            flutter.TextField(
               controller: _identifierController,
               style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
+              decoration: flutter.InputDecoration(
                 filled: true,
-                fillColor: const Color(0xFF1C273A), // Input Field Color
+                fillColor: const Color(0xFF1C273A),
                 hintText: "Enter email or phone",
                 hintStyle: const TextStyle(color: Colors.grey),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -69,14 +73,17 @@ class _LoginPageState extends State<LoginPage> {
             
             const SizedBox(height: 20),
 
-            // --- INPUT PASSWORD ---
-            const Text("Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            TextField(
+            const Padding(
+              padding: EdgeInsets.only(bottom: 8.0),
+              child: Text("Password", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+
+            // Input Password 
+            flutter.TextField(
               controller: _passwordController,
               obscureText: _isObscure,
               style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
+              decoration: flutter.InputDecoration(
                 filled: true,
                 fillColor: const Color(0xFF1C273A),
                 hintText: "Enter password",
@@ -90,7 +97,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
 
-            // --- FORGOT PASSWORD LINK ---
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
@@ -103,7 +109,6 @@ class _LoginPageState extends State<LoginPage> {
 
             const SizedBox(height: 30),
 
-            // --- TOMBOL MASUK ---
             SizedBox(
               width: double.infinity,
               height: 50,
@@ -119,17 +124,16 @@ class _LoginPageState extends State<LoginPage> {
                   bool success = await provider.login(_identifierController.text, _passwordController.text);
                   
                   if (success && context.mounted) {
-                    // MAPPING DATA KE MODEL USER ASLI
+              
                     final userForHome = real_user.User(
-                      userId: 1, // Dummy ID
+                      userId: 1, 
                       username: provider.currentUser?.username ?? "User",
-                      email: provider.currentUser?.email ?? "email@test.com",
+                      email: provider.currentUser?.email ?? "email@test.com", 
                       password: _passwordController.text,
                       totalSaldo: 0, 
                       isLoggedIn: true,
                     );
 
-                    // PINDAH KE HOME SCREEN
                     Navigator.pushReplacement(
                       context, 
                       MaterialPageRoute(builder: (context) => HomeScreen(user: userForHome))
@@ -139,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0096C7), // Warna Tombol Cyan
+                  backgroundColor: const Color(0xFF0096C7),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
                 child: isLoading 

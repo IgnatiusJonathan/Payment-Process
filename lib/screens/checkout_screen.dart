@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../provider/user_provider.dart';
+import '../provider/transaction_provider.dart';
+import '../database/transaction_repository.dart';
 import '../widgets/checkout/checkout_info.dart';
 import '../widgets/checkout/checkout_timer.dart';
 import '../widgets/checkout/checkout_payment.dart';
 import '../widgets/checkout/pin_dialog.dart';
-import '../provider/user_provider.dart';
-import '../provider/transaction_provider.dart';
-import '../models/transaction_model.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   final String paymentType;
   final double amount;
   final String transactionType;
-  final Function(double)? onTransactionSuccess;
 
   const CheckoutScreen({
     super.key,
     required this.paymentType,
     required this.amount,
     required this.transactionType,
-    this.onTransactionSuccess,
   });
 
   @override
@@ -71,64 +69,64 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
     );
   }
 
-  void _showPinDialog() {
-    showDialog(
+  Future<void> _showPinDialog() async {
+    final password = await showDialog<String>(
       context: context,
-      builder: (context) => PinDialog(onConfirm: _prosesTransaksi),
+      builder: (context) => const PinDialog(),
     );
+
+    if (password != null && password.isNotEmpty) {
+      final userNotifier = ref.read(userProvider.notifier);
+      final isValid = await userNotifier.validatePassword(password);
+      
+      if (isValid) {
+        _prosesTransaksi();
+      } else {
+        if (mounted) {
+          _errorPopup("Password salah");
+        }
+      }
+    }
   }
 
   Future<void> _prosesTransaksi() async {
     if (_dalamProses) return;
-
+    
     setState(() => _dalamProses = true);
 
     try {
+      final userNotifier = ref.read(userProvider.notifier);
+      final transactionRepo = ref.read(transactionRepositoryProvider);
+      final currentUser = ref.read(userProvider);
+
+      if (currentUser == null) {
+        throw "User not found";
+      }
+
       await Future.delayed(const Duration(seconds: 2));
 
+      final success = await userNotifier.decrementSaldo(widget.amount.toInt());
+      
+      if (!success) {
+        throw "Saldo tidak cukup";
+      }
+
+      await transactionRepo.addTransaction(
+        userId: currentUser.userID,
+        recipient: widget.transactionType == 'transfer' ? 'Recipient Name' : 'Merchant',
+        amount: widget.amount.toInt(),
+        type: widget.transactionType.toLowerCase(),
+        description: '${widget.transactionType} via ${widget.paymentType}',
+      );
+
+      await ref.read(transactionProvider.notifier).loadTransactions(currentUser.userID);
+      
       if (context.mounted) {
         Navigator.of(context).pop();
-
-        if (widget.transactionType == 'transfer') {
-          print('Memproses transfer: ${widget.amount}');
-          ref.read(userProvider.notifier).transfer(widget.amount);
-
-          final newTx = TransactionModel(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            date: DateTime.now(),
-            type: TransactionType.transfer,
-            status: TransactionStatus.success,
-            description: 'Transfer ke ${widget.paymentType}',
-            amount: widget.amount,
-            isIncome: false,
-          );
-          ref.read(transactionProvider.notifier).addTransaction(newTx);
-        } else if (widget.transactionType == 'topup') {
-          print('Memproses topup: ${widget.amount}');
-          ref.read(userProvider.notifier).topUp(widget.amount);
-
-          final newTx = TransactionModel(
-            id: DateTime.now().millisecondsSinceEpoch.toString(),
-            date: DateTime.now(),
-            type: TransactionType.topup,
-            status: TransactionStatus.success,
-            description: 'Top Up Saldo',
-            amount: widget.amount,
-            isIncome: true,
-          );
-          ref.read(transactionProvider.notifier).addTransaction(newTx);
-        }
-
-        await Future.delayed(const Duration(milliseconds: 300));
-
-        if (context.mounted) {
-          _suksesPopup();
-        }
+        _suksesPopup();
       }
     } catch (e) {
-      print('Error dalam transaksi: $e');
       if (context.mounted) {
-        Navigator.of(context).pop();
         _errorPopup(e.toString());
       }
     } finally {
@@ -149,7 +147,10 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   }
 
   void _errorPopup(String error) {
-    showDialog(context: context, builder: (context) => _buatErrorPopup(error));
+    showDialog(
+      context: context,
+      builder: (context) => _buatErrorPopup(error),
+    );
   }
 
   Widget _buatSuksesPopup(BuildContext dialogContext) {
@@ -165,7 +166,7 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         ),
       ),
       content: Text(
-        '${widget.transactionType == 'transfer' ? 'Top-Up' : 'Transfer'} sebesar Rp ${(widget.amount.toInt())} berhasil.',
+        '${widget.transactionType == 'transfer' ? 'Top' : 'Top-Up'} sebesar Rp ${(widget.amount.toInt())} berhasil.',
         style: TextStyle(color: theme.colorScheme.onPrimary),
       ),
       actions: [

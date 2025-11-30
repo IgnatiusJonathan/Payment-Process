@@ -4,17 +4,22 @@ import '../widgets/checkout/checkout_info.dart';
 import '../widgets/checkout/checkout_timer.dart';
 import '../widgets/checkout/checkout_payment.dart';
 import '../widgets/checkout/pin_dialog.dart';
+import '../provider/user_provider.dart';
+import '../provider/transaction_provider.dart';
+import '../models/transaction_model.dart';
 
 class CheckoutScreen extends ConsumerStatefulWidget {
   final String paymentType;
   final double amount;
   final String transactionType;
+  final Function(double)? onTransactionSuccess;
 
   const CheckoutScreen({
     super.key,
     required this.paymentType,
     required this.amount,
     required this.transactionType,
+    this.onTransactionSuccess,
   });
 
   @override
@@ -75,18 +80,55 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
   Future<void> _prosesTransaksi() async {
     if (_dalamProses) return;
-    
+
     setState(() => _dalamProses = true);
 
     try {
       await Future.delayed(const Duration(seconds: 2));
-      
+
       if (context.mounted) {
         Navigator.of(context).pop();
-        _suksesPopup();
+
+        if (widget.transactionType == 'transfer') {
+          print('Memproses transfer: ${widget.amount}');
+          ref.read(userProvider.notifier).transfer(widget.amount);
+
+          final newTx = TransactionModel(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            date: DateTime.now(),
+            type: TransactionType.transfer,
+            status: TransactionStatus.success,
+            description: 'Transfer ke ${widget.paymentType}',
+            amount: widget.amount,
+            isIncome: false,
+          );
+          ref.read(transactionProvider.notifier).addTransaction(newTx);
+        } else if (widget.transactionType == 'topup') {
+          print('Memproses topup: ${widget.amount}');
+          ref.read(userProvider.notifier).topUp(widget.amount);
+
+          final newTx = TransactionModel(
+            id: DateTime.now().millisecondsSinceEpoch.toString(),
+            date: DateTime.now(),
+            type: TransactionType.topup,
+            status: TransactionStatus.success,
+            description: 'Top Up Saldo',
+            amount: widget.amount,
+            isIncome: true,
+          );
+          ref.read(transactionProvider.notifier).addTransaction(newTx);
+        }
+
+        await Future.delayed(const Duration(milliseconds: 300));
+
+        if (context.mounted) {
+          _suksesPopup();
+        }
       }
     } catch (e) {
+      print('Error dalam transaksi: $e');
       if (context.mounted) {
+        Navigator.of(context).pop();
         _errorPopup(e.toString());
       }
     } finally {
@@ -99,24 +141,20 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
   void _suksesPopup() {
     showDialog(
       context: context,
-      builder: (context) => _buatSuksesPopup(),
-    ).then((_) {
-      if (context.mounted) {
-        Navigator.of(context).pop();
-      }
-    });
-  }
-
-  void _errorPopup(String error) {
-    showDialog(
-      context: context,
-      builder: (context) => _buatErrorPopup(error),
+      barrierDismissible: false,
+      builder: (context) {
+        return _buatSuksesPopup(context);
+      },
     );
   }
 
-  Widget _buatSuksesPopup() {
-    final theme = Theme.of(context);
-    
+  void _errorPopup(String error) {
+    showDialog(context: context, builder: (context) => _buatErrorPopup(error));
+  }
+
+  Widget _buatSuksesPopup(BuildContext dialogContext) {
+    final theme = Theme.of(dialogContext);
+
     return AlertDialog(
       backgroundColor: theme.colorScheme.tertiary,
       title: Text(
@@ -127,20 +165,23 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         ),
       ),
       content: Text(
-        '${widget.transactionType == 'transfer' ? 'Transfer' : 'Top-Up'} sebesar Rp ${(widget.amount.toInt())} berhasil.',
+        '${widget.transactionType == 'transfer' ? 'Top-Up' : 'Transfer'} sebesar Rp ${(widget.amount.toInt())} berhasil.',
         style: TextStyle(color: theme.colorScheme.onPrimary),
       ),
       actions: [
-        TextButton(
+        ElevatedButton(
           onPressed: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).pop();
+            Navigator.of(dialogContext).pop();
+
+            Future.delayed(Duration.zero, () {
+              Navigator.of(context).pop();
+            });
           },
-          style: TextButton.styleFrom(
-            foregroundColor: theme.colorScheme.primary,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: theme.colorScheme.primary,
+            foregroundColor: theme.colorScheme.onPrimary,
           ),
           child: const Text('OK'),
-          // Lain kali ubah jadi button
         ),
       ],
     );
@@ -148,13 +189,13 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
 
   Widget _buatErrorPopup(String error) {
     final theme = Theme.of(context);
-    
+
     return AlertDialog(
       backgroundColor: theme.colorScheme.tertiary,
       title: Text(
         'Transaksi Gagal',
         style: TextStyle(
-          color: Colors.red.shade300,
+          color: const Color.fromARGB(255, 175, 103, 117),
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -163,13 +204,15 @@ class _CheckoutScreenState extends ConsumerState<CheckoutScreen> {
         style: TextStyle(color: theme.colorScheme.onPrimary),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          style: TextButton.styleFrom(
-            foregroundColor: theme.colorScheme.primary,
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: theme.colorScheme.primary,
+            foregroundColor: theme.colorScheme.onPrimary,
           ),
           child: const Text('OK'),
-          // Lain kali ubah jadi button
         ),
       ],
     );

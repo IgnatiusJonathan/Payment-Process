@@ -141,5 +141,5 @@ class AuthProvider with ChangeNotifier {
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
-}
+} // barusan saya perbaiki kesalahan spasi kecil disini
 }
